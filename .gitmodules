@@ -1,0 +1,3 @@
+[submodule "modules/platform"]
+	path = modules/platform
+	url = ../platform
