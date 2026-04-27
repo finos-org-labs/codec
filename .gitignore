@@ -9,6 +9,10 @@ build/**
 build-*/
 install/
 
+# Src
+src/**
+!src/**/CMakeLists.txt
+
 # Go
 *.test
 *.out

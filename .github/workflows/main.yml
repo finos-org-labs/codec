@@ -15,7 +15,7 @@
 #
 # Architecture:
 #   Stage 1 — Build:  Linux native + Windows cross-compile
-#   Stage 2 — QA:     Static analysis
+#   Stage 2 — QA:     Sanitizer / Static analysis
 #   Stage 3 — Go:     Go module tests
 #
 
@@ -121,7 +121,124 @@ jobs:
           retention-days: 5
 
   # =========================================================================
-  # Stage 2 — Static analysis
+  # Stage 2a — Sanitizers (ASan / USan / TSan / MSan)
+  # =========================================================================
+
+  sanitizer-asan:
+    name: Sanitizer / ASan
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup dependencies
+        uses: ./.github/actions/setup-deps
+        with:
+          c-build: 'true'
+
+      - name: Configure
+        env:
+          CC: gcc
+        run: |
+          cmake -B build/sanitizer-asan \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DFC_ENABLE_SANITIZERS=ON \
+            -DFC_SANITIZER_TYPE=address
+
+      - name: Build
+        run: cmake --build build/sanitizer-asan --parallel
+
+      - name: Test
+        run: ctest --output-on-failure --test-dir build/sanitizer-asan
+
+  sanitizer-usan:
+    name: Sanitizer / USan
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup dependencies
+        uses: ./.github/actions/setup-deps
+        with:
+          c-build: 'true'
+
+      - name: Configure
+        env:
+          CC: gcc
+        run: |
+          cmake -B build/sanitizer-usan \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DFC_ENABLE_SANITIZERS=ON \
+            -DFC_SANITIZER_TYPE=undefined
+
+      - name: Build
+        run: cmake --build build/sanitizer-usan --parallel
+
+      - name: Test
+        run: ctest --output-on-failure --test-dir build/sanitizer-usan
+
+  sanitizer-tsan:
+    name: Sanitizer / TSan
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup dependencies
+        uses: ./.github/actions/setup-deps
+        with:
+          c-build: 'true'
+
+      - name: Configure
+        env:
+          CC: gcc
+        run: |
+          cmake -B build/sanitizer-tsan \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DFC_ENABLE_SANITIZERS=ON \
+            -DFC_SANITIZER_TYPE=thread
+
+      - name: Build
+        run: cmake --build build/sanitizer-tsan --parallel
+
+      - name: Test
+        run: ctest --output-on-failure --test-dir build/sanitizer-tsan
+
+  sanitizer-msan:
+    name: Sanitizer / MSan
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup dependencies
+        uses: ./.github/actions/setup-deps
+        with:
+          c-build: 'true'
+          qa: 'true'
+
+      - name: Configure
+        env:
+          CC: clang
+        run: |
+          cmake -B build/sanitizer-msan \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DFC_ENABLE_SANITIZERS=ON \
+            -DFC_SANITIZER_TYPE=memory
+
+      - name: Build
+        run: cmake --build build/sanitizer-msan --parallel
+
+      - name: Test
+        run: ctest --output-on-failure --test-dir build/sanitizer-msan
+
+  # =========================================================================
+  # Stage 2b — Static analysis
   # =========================================================================
 
   clang-tidy:

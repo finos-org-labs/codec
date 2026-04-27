@@ -7,6 +7,13 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # Compile options
 add_compile_options(-Wall -Wextra -Wpedantic -ffp-contract=off)
 
+# Sanitizer configuration
+if(FC_ENABLE_SANITIZERS)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.github/sanitizers.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/.github/sanitizers.cmake)
+    endif()
+endif()
+
 # Add platform submodule
 add_subdirectory(modules/platform EXCLUDE_FROM_ALL)
 
