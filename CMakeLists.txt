@@ -4,8 +4,9 @@ project(finkit-codec VERSION 1.0.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-# Compile options
-add_compile_options(-Wall -Wextra -Wpedantic -ffp-contract=off)
+# Include SIMD detection and compiler flags
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/DetectSIMD.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompilerFlags.cmake)
 
 # Sanitizer configuration
 if(FC_ENABLE_SANITIZERS)
@@ -13,6 +14,22 @@ if(FC_ENABLE_SANITIZERS)
         include(${CMAKE_CURRENT_SOURCE_DIR}/.github/sanitizers.cmake)
     endif()
 endif()
+
+# Generate cgo_source.go with detected SIMD flags
+if(FC_SIMD_LEVEL STREQUAL "AVX512")
+    set(FC_SIMD_CFLAGS "${FC_AVX512_FLAGS}")
+elseif(FC_SIMD_LEVEL STREQUAL "AVX2")
+    set(FC_SIMD_CFLAGS "${FC_AVX2_FLAGS}")
+elseif(FC_SIMD_LEVEL STREQUAL "SSE42")
+    set(FC_SIMD_CFLAGS "${FC_SSE42_FLAGS}")
+else()
+    set(FC_SIMD_CFLAGS "")
+endif()
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cgo_source.go.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/cgo_source.go
+    @ONLY
+)
 
 # Add platform submodule
 add_subdirectory(modules/platform EXCLUDE_FROM_ALL)
@@ -34,11 +51,13 @@ target_include_directories(finkit_codec
 
 target_compile_definitions(finkit_codec PRIVATE FC_STATIC_BUILD)
 
-# Set compile flags for SIMD variants in fix_codec.c
-if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-    set_source_files_properties(src/fix_codec.c PROPERTIES COMPILE_FLAGS "-msse4.2 -mavx2")
-elseif(MSVC)
-    set_source_files_properties(src/fix_codec.c PROPERTIES COMPILE_FLAGS "/arch:AVX2")
+# Set compile flags for SIMD variants based on detected level
+if(FC_SIMD_LEVEL STREQUAL "AVX512")
+    set_source_files_properties(src/fix_codec.c PROPERTIES COMPILE_FLAGS "${FC_AVX512_FLAGS}")
+elseif(FC_SIMD_LEVEL STREQUAL "AVX2")
+    set_source_files_properties(src/fix_codec.c PROPERTIES COMPILE_FLAGS "${FC_AVX2_FLAGS}")
+elseif(FC_SIMD_LEVEL STREQUAL "SSE42")
+    set_source_files_properties(src/fix_codec.c PROPERTIES COMPILE_FLAGS "${FC_SSE42_FLAGS}")
 endif()
 
 # Create static library
