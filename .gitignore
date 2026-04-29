@@ -9,9 +9,7 @@ build/**
 build-*/
 install/
 
-# Src
-src/**
-!src/**/CMakeLists.txt
+codec-c/**
 
 # Go
 *.test

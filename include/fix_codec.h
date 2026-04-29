@@ -19,26 +19,26 @@
 #ifndef FC_FIX_CODEC_H
 #define FC_FIX_CODEC_H
 
-#include <platform.h>
 #include <error.h>
+#include <platform.h>
 
 FC_BEGIN_DECLS
 
 /**
  * @brief FIX protocol constants
  */
-#define FC_FIX_MAX_FIELDS_PER_MSG  256   /**< Maximum fields per message */
-#define FC_FIX_MAX_MESSAGES        16    /**< Maximum messages per batch parse */
-#define FC_FIX_SOH                 0x01  /**< FIX field separator (Start Of Header) */
-#define FC_FIX_SINGLE_MAX_FIELDS   128   /**< Maximum fields for single message parse */
+#define FC_FIX_MAX_FIELDS_PER_MSG 256 /**< Maximum fields per message */
+#define FC_FIX_MAX_MESSAGES 16        /**< Maximum messages per batch parse */
+#define FC_FIX_SOH 0x01               /**< FIX field separator (Start Of Header) */
+#define FC_FIX_SINGLE_MAX_FIELDS 128  /**< Maximum fields for single message parse */
 
 /**
  * @brief Field section classification
  */
 typedef enum {
-    FC_FIX_SECTION_HEADER  = 0,  /**< Message header */
-    FC_FIX_SECTION_BODY    = 1,  /**< Message body */
-    FC_FIX_SECTION_TRAILER = 2,  /**< Message trailer */
+    FC_FIX_SECTION_HEADER = 0,  /**< Message header */
+    FC_FIX_SECTION_BODY = 1,    /**< Message body */
+    FC_FIX_SECTION_TRAILER = 2, /**< Message trailer */
 } fc_fix_section_t;
 
 /**
@@ -46,15 +46,15 @@ typedef enum {
  *
  * Each bit corresponds to a required FIX protocol standard header tag
  */
-#define FC_FIX_REQBIT_BEGINSTRING  (1u << 0)  /**< tag 8  - BeginString */
-#define FC_FIX_REQBIT_BODYLENGTH   (1u << 1)  /**< tag 9  - BodyLength */
-#define FC_FIX_REQBIT_MSGTYPE      (1u << 2)  /**< tag 35 - MsgType */
-#define FC_FIX_REQBIT_MSGSEQNUM    (1u << 3)  /**< tag 34 - MsgSeqNum */
-#define FC_FIX_REQBIT_SENDERCOMPID (1u << 4)  /**< tag 49 - SenderCompID */
-#define FC_FIX_REQBIT_TARGETCOMPID (1u << 5)  /**< tag 56 - TargetCompID */
-#define FC_FIX_REQBIT_SENDINGTIME  (1u << 6)  /**< tag 52 - SendingTime */
-#define FC_FIX_REQBIT_CHECKSUM     (1u << 7)  /**< tag 10 - CheckSum */
-#define FC_FIX_REQBIT_ALL_BASIC    0xFFu      /**< All basic required tags */
+#define FC_FIX_REQBIT_BEGINSTRING (1u << 0)  /**< tag 8  - BeginString */
+#define FC_FIX_REQBIT_BODYLENGTH (1u << 1)   /**< tag 9  - BodyLength */
+#define FC_FIX_REQBIT_MSGTYPE (1u << 2)      /**< tag 35 - MsgType */
+#define FC_FIX_REQBIT_MSGSEQNUM (1u << 3)    /**< tag 34 - MsgSeqNum */
+#define FC_FIX_REQBIT_SENDERCOMPID (1u << 4) /**< tag 49 - SenderCompID */
+#define FC_FIX_REQBIT_TARGETCOMPID (1u << 5) /**< tag 56 - TargetCompID */
+#define FC_FIX_REQBIT_SENDINGTIME (1u << 6)  /**< tag 52 - SendingTime */
+#define FC_FIX_REQBIT_CHECKSUM (1u << 7)     /**< tag 10 - CheckSum */
+#define FC_FIX_REQBIT_ALL_BASIC 0xFFu        /**< All basic required tags */
 
 /**
  * @brief Parsed field information
@@ -64,13 +64,13 @@ typedef enum {
  * on the Go side.
  */
 typedef struct {
-    int32_t  tag;             /**< Tag number (e.g., 8, 35, 49) */
-    uint32_t value_offset;    /**< Value start offset (after '=') */
-    uint16_t value_length;    /**< Value byte length (excluding SOH) */
-    uint32_t raw_offset;      /**< Raw field start offset ("tag=value\x01") */
-    uint16_t raw_length;      /**< Raw field byte length (including SOH) */
-    uint8_t  section;         /**< Section: FC_FIX_SECTION_HEADER/BODY/TRAILER */
-    uint8_t  _pad;            /**< Alignment padding */
+    int32_t tag;           /**< Tag number (e.g., 8, 35, 49) */
+    uint32_t value_offset; /**< Value start offset (after '=') */
+    uint16_t value_length; /**< Value byte length (excluding SOH) */
+    uint32_t raw_offset;   /**< Raw field start offset ("tag=value\x01") */
+    uint16_t raw_length;   /**< Raw field byte length (including SOH) */
+    uint8_t section;       /**< Section: FC_FIX_SECTION_HEADER/BODY/TRAILER */
+    uint8_t _pad;          /**< Alignment padding */
 } fc_fix_parsed_field_t;
 
 /**
@@ -81,17 +81,17 @@ typedef struct {
  * zero-overhead validation without re-traversing fields.
  */
 typedef struct {
-    uint32_t              msg_offset;           /**< Message start offset in input buffer */
-    uint32_t              msg_length;           /**< Total message byte count (including CheckSum SOH) */
-    uint32_t              computed_checksum;    /**< C-computed raw byte sum (Go side %256 for comparison) */
-    uint32_t              computed_body_length; /**< C-computed BodyLength */
-    uint32_t              declared_checksum;    /**< Declared CheckSum value from tag 10 */
-    uint32_t              declared_body_length; /**< Declared BodyLength value from tag 9 */
-    int32_t               field_count;          /**< Total field count */
-    int32_t               header_field_count;   /**< Header field count */
-    int32_t               body_field_count;     /**< Body field count */
-    int32_t               trailer_field_count;  /**< Trailer field count */
-    uint32_t              required_tags_bitmap; /**< Required tag presence bitmap */
+    uint32_t msg_offset;           /**< Message start offset in input buffer */
+    uint32_t msg_length;           /**< Total message byte count (including CheckSum SOH) */
+    uint32_t computed_checksum;    /**< C-computed raw byte sum (Go side %256 for comparison) */
+    uint32_t computed_body_length; /**< C-computed BodyLength */
+    uint32_t declared_checksum;    /**< Declared CheckSum value from tag 10 */
+    uint32_t declared_body_length; /**< Declared BodyLength value from tag 9 */
+    int32_t field_count;           /**< Total field count */
+    int32_t header_field_count;    /**< Header field count */
+    int32_t body_field_count;      /**< Body field count */
+    int32_t trailer_field_count;   /**< Trailer field count */
+    uint32_t required_tags_bitmap; /**< Required tag presence bitmap */
     fc_fix_parsed_field_t fields[FC_FIX_MAX_FIELDS_PER_MSG]; /**< All fields array */
 } fc_fix_parsed_message_t;
 
@@ -103,9 +103,9 @@ typedef struct {
  * have been successfully consumed, allowing Go side to advance read pointer.
  */
 typedef struct {
-    int32_t                  msg_count;       /**< Number of successfully parsed messages */
-    int32_t                  consumed_bytes;  /**< Total bytes consumed from input buffer */
-    fc_fix_parsed_message_t  messages[FC_FIX_MAX_MESSAGES]; /**< Parse results for each message */
+    int32_t msg_count;                                     /**< Number of successfully parsed messages */
+    int32_t consumed_bytes;                                /**< Total bytes consumed from input buffer */
+    fc_fix_parsed_message_t messages[FC_FIX_MAX_MESSAGES]; /**< Parse results for each message */
 } fc_fix_parse_result_t;
 
 /**
@@ -118,18 +118,18 @@ typedef struct {
  *     avoiding large structure allocation overhead
  */
 typedef struct {
-    int32_t               success;              /**< Non-zero if complete message found and parsed */
-    uint32_t              msg_offset;           /**< Message start offset in input buffer */
-    uint32_t              msg_length;           /**< Total message byte count */
-    uint32_t              computed_checksum;    /**< C-computed raw byte sum */
-    uint32_t              computed_body_length; /**< C-computed BodyLength */
-    uint32_t              declared_checksum;    /**< Declared CheckSum value from tag 10 */
-    uint32_t              declared_body_length; /**< Declared BodyLength value from tag 9 */
-    int32_t               field_count;          /**< Total field count */
-    int32_t               header_field_count;   /**< Header field count */
-    int32_t               body_field_count;     /**< Body field count */
-    int32_t               trailer_field_count;  /**< Trailer field count */
-    uint32_t              required_tags_bitmap; /**< Required tag presence bitmap */
+    int32_t success;                                        /**< Non-zero if complete message found and parsed */
+    uint32_t msg_offset;                                    /**< Message start offset in input buffer */
+    uint32_t msg_length;                                    /**< Total message byte count */
+    uint32_t computed_checksum;                             /**< C-computed raw byte sum */
+    uint32_t computed_body_length;                          /**< C-computed BodyLength */
+    uint32_t declared_checksum;                             /**< Declared CheckSum value from tag 10 */
+    uint32_t declared_body_length;                          /**< Declared BodyLength value from tag 9 */
+    int32_t field_count;                                    /**< Total field count */
+    int32_t header_field_count;                             /**< Header field count */
+    int32_t body_field_count;                               /**< Body field count */
+    int32_t trailer_field_count;                            /**< Trailer field count */
+    uint32_t required_tags_bitmap;                          /**< Required tag presence bitmap */
     fc_fix_parsed_field_t fields[FC_FIX_SINGLE_MAX_FIELDS]; /**< All fields array */
 } fc_fix_parse_single_result_t;
 
@@ -141,19 +141,19 @@ typedef struct {
  * during cgo call by runtime.
  */
 typedef struct {
-    int32_t        tag;           /**< Tag number */
-    const uint8_t* value;         /**< Value byte pointer */
-    uint16_t       value_length;  /**< Value byte length */
+    int32_t tag;           /**< Tag number */
+    const uint8_t* value;  /**< Value byte pointer */
+    uint16_t value_length; /**< Value byte length */
 } fc_fix_marshal_field_t;
 
 /**
  * @brief Marshal result
  */
 typedef struct {
-    int32_t  success;        /**< Non-zero indicates success */
-    uint32_t output_length;  /**< Actual bytes written to output buffer */
-    uint32_t body_length;    /**< Calculated BodyLength */
-    uint32_t checksum;       /**< Calculated CheckSum (already %256) */
+    int32_t success;        /**< Non-zero indicates success */
+    uint32_t output_length; /**< Actual bytes written to output buffer */
+    uint32_t body_length;   /**< Calculated BodyLength */
+    uint32_t checksum;      /**< Calculated CheckSum (already %256) */
 } fc_fix_marshal_result_t;
 
 /**
@@ -175,11 +175,7 @@ typedef struct {
  * @note Time complexity: O(n) where n is data_length
  * @note Space complexity: O(1) - no heap allocation
  */
-int fc_fix_parse_messages(
-    const uint8_t*         data,
-    size_t                 data_length,
-    fc_fix_parse_result_t* result
-);
+int fc_fix_parse_messages(const uint8_t* data, size_t data_length, fc_fix_parse_result_t* result);
 
 /**
  * @brief Parse single FIX message (lightweight version)
@@ -201,11 +197,7 @@ int fc_fix_parse_messages(
  * @note Time complexity: O(n) where n is data_length
  * @note Space complexity: O(1) - no heap allocation
  */
-int fc_fix_parse_one(
-    const uint8_t*                data,
-    size_t                        data_length,
-    fc_fix_parse_single_result_t* result
-);
+int fc_fix_parse_one(const uint8_t* data, size_t data_length, fc_fix_parse_single_result_t* result);
 
 /**
  * @brief Zero-allocation single message parse (SoA layout)
@@ -236,23 +228,11 @@ int fc_fix_parse_one(
  * @note Time complexity: O(n) where n is data_length
  * @note Space complexity: O(1) - no heap allocation
  */
-int fc_fix_parse_fields_into(
-    const uint8_t* data,
-    size_t         data_length,
-    int32_t*       out_tags,
-    uint32_t*      out_value_offs,
-    uint16_t*      out_value_lens,
-    uint32_t*      out_raw_offs,
-    uint16_t*      out_raw_lens,
-    uint8_t*       out_sections,
-    int            max_fields,
-    uint32_t*      out_msg_offset,
-    uint32_t*      out_msg_length,
-    uint32_t*      out_checksum,
-    uint32_t*      out_body_length,
-    uint32_t*      out_declared_checksum,
-    uint32_t*      out_declared_body_length
-);
+int fc_fix_parse_fields_into(const uint8_t* data, size_t data_length, int32_t* out_tags, uint32_t* out_value_offs,
+                             uint16_t* out_value_lens, uint32_t* out_raw_offs, uint16_t* out_raw_lens,
+                             uint8_t* out_sections, int max_fields, uint32_t* out_msg_offset, uint32_t* out_msg_length,
+                             uint32_t* out_checksum, uint32_t* out_body_length, uint32_t* out_declared_checksum,
+                             uint32_t* out_declared_body_length);
 
 /**
  * @brief Zero-allocation single message parse (AoS layout)
@@ -279,18 +259,10 @@ int fc_fix_parse_fields_into(
  * @note Time complexity: O(n) where n is data_length
  * @note Space complexity: O(1) - no heap allocation
  */
-int fc_fix_parse_fields_aos(
-    const uint8_t*         data,
-    size_t                 data_length,
-    fc_fix_parsed_field_t* out_fields,
-    int                    max_fields,
-    uint32_t*              out_msg_offset,
-    uint32_t*              out_msg_length,
-    uint32_t*              out_checksum,
-    uint32_t*              out_body_length,
-    uint32_t*              out_declared_checksum,
-    uint32_t*              out_declared_body_length
-);
+int fc_fix_parse_fields_aos(const uint8_t* data, size_t data_length, fc_fix_parsed_field_t* out_fields, int max_fields,
+                            uint32_t* out_msg_offset, uint32_t* out_msg_length, uint32_t* out_checksum,
+                            uint32_t* out_body_length, uint32_t* out_declared_checksum,
+                            uint32_t* out_declared_body_length);
 
 /**
  * @brief Assemble structured fields into complete FIX message byte stream
@@ -311,14 +283,9 @@ int fc_fix_parse_fields_aos(
  * @note Time complexity: O(n) where n is total field bytes
  * @note Space complexity: O(1) - no heap allocation
  */
-fc_fix_marshal_result_t fc_fix_marshal_message(
-    const uint8_t*               begin_string,
-    int32_t                      begin_string_len,
-    const fc_fix_marshal_field_t* fields,
-    int32_t                      field_count,
-    uint8_t*                     output_buf,
-    size_t                       output_buf_cap
-);
+fc_fix_marshal_result_t fc_fix_marshal_message(const uint8_t* begin_string, int32_t begin_string_len,
+                                               const fc_fix_marshal_field_t* fields, int32_t field_count,
+                                               uint8_t* output_buf, size_t output_buf_cap);
 
 /**
  * @brief Calculate byte sum (for FIX CheckSum)
@@ -338,19 +305,6 @@ fc_fix_marshal_result_t fc_fix_marshal_message(
  * @note Space complexity: O(1)
  */
 uint32_t fc_fix_checksum(const uint8_t* data, size_t length);
-
-/**
- * @brief Get current SIMD acceleration level
- *
- * Returns static string: "avx2", "sse4.2", or "scalar".
- * For diagnostics and logging. Must be called after fc_fix_parse_messages /
- * fc_fix_checksum (they trigger initialization).
- *
- * @return SIMD level string
- *
- * @note Thread-safe after library initialization
- */
-const char* fc_fix_simd_level(void);
 
 FC_END_DECLS
 

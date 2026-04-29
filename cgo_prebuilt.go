@@ -13,9 +13,5 @@ package codec
 #cgo darwin,arm64  LDFLAGS: -L${SRCDIR}/build/darwin_arm64 -lfinkit_codec_static -lm
 #cgo windows,amd64 LDFLAGS: -L${SRCDIR}/build/windows_amd64 -lfinkit_codec_static -lm
 
-
-// Forward declarations for fc_init/fc_cleanup (no public header)
-int fc_init(void);
-void fc_cleanup(void);
 */
 import "C"

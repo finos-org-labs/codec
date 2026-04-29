@@ -7,7 +7,7 @@
 package codec
 
 /*
-#cgo CFLAGS: -I${SRCDIR}/include -I${SRCDIR}/modules/platform/include -I${SRCDIR}/src -I${SRCDIR}/modules/platform/src -O2 -Wall -std=c11 -D_POSIX_C_SOURCE=200112L -mavx2 -mfma
+#cgo CFLAGS: -I${SRCDIR}/include -I${SRCDIR}/modules/platform/include -I${SRCDIR}/codec-c -I${SRCDIR}/modules/platform/src -O2 -Wall -std=c11 -D_POSIX_C_SOURCE=200112L -mavx2 -mfma
 #cgo LDFLAGS: -lm
 
 #include "codec.h"
@@ -29,10 +29,6 @@ package codec
 #endif
 
 // Codec sources
-#include "fix_codec.c"
-
-// Forward declarations for fc_init/fc_cleanup (no public header)
-int fc_init(void);
-void fc_cleanup(void);
+#include "codec-c/fix_codec.c"
 */
 import "C"

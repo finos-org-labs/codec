@@ -57,9 +57,9 @@ LINUX_CONFIG := -G Ninja \
 
 default: linux
 
-all: linux windows go
+all: format linux windows go
 
-qa: qa-static qa-sanitizers
+qa: format qa-static qa-sanitizers
 	@echo "==> All QA checks completed"
 
 qa-static: clang-tidy cppcheck
@@ -112,7 +112,11 @@ bench:
 
 format:
 	@echo "==> Formatting C code with clang-format"
-	@find src include -name '*.c' -o -name '*.h' | xargs clang-format -i
+	@if command -v clang-format >/dev/null 2>&1; then \
+		find codec-c include \( -name '*.c' -o -name '*.h' \) -exec clang-format -i {} \; ; \
+	else \
+		echo "WARNING: clang-format not found, skipping format check"; \
+	fi
 
 verify:
 	@echo "=== Verify artifact formats ==="
@@ -181,11 +185,11 @@ clang-tidy:
 		-DCMAKE_BUILD_TYPE=Debug \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON >/dev/null 2>&1 || true
 	@echo "==> Running clang-tidy analysis on C source files"
-	@find src include \( -name '*.c' -o -name '*.h' \) \
+	@find codec-c include \( -name '*.c' -o -name '*.h' \) \
 		! -name 'platform_win.c' \
 		! -name 'platform_macos.c' \
 		-print | while read f; do echo "  Checking: $$f"; done
-	@find src include \( -name '*.c' -o -name '*.h' \) \
+	@find codec-c include \( -name '*.c' -o -name '*.h' \) \
 		! -name 'platform_win.c' \
 		! -name 'platform_macos.c' \
 		-exec clang-tidy -p build/clang-tidy {} \; 2>&1 | \
@@ -194,7 +198,7 @@ clang-tidy:
 
 cppcheck:
 	@echo "==> Running cppcheck static analysis on C source files"
-	@find src include \( -name '*.c' -o -name '*.h' \) -print | \
+	@find codec-c include \( -name '*.c' -o -name '*.h' \) -print | \
 		while read f; do echo "  Checking: $$f"; done
 	@cppcheck --enable=warning,performance,portability \
 		--suppress=missingIncludeSystem \
@@ -203,7 +207,7 @@ cppcheck:
 		--suppress=unusedFunction \
 		--suppress=knownConditionTrueFalse \
 		--inline-suppr --quiet \
-		-I include src/ 2>&1 || true
+		-I include codec-c/ 2>&1 || true
 	@echo "==> cppcheck: No issues found"
 
 clean:

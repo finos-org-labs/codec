@@ -4,6 +4,7 @@
 
 #include "test_framework.h"
 #include <fix_codec.h>
+#include <simd_detect.h>
 #include <string.h>
 
 /*
@@ -460,9 +461,9 @@ TEST(test_fix_marshal_null_value) {
  * SIMD Level Test
 */
 
-/* Test fc_fix_simd_level */
+/* Test SIMD level detection */
 TEST(test_fix_simd_level) {
-    const char* level = fc_fix_simd_level();
+    const char* level = fc_simd_level_string(fc_get_simd_level());
     FC_TEST_ASSERT_NONZERO(level != NULL);
 
     /* Should be one of the valid SIMD level strings */

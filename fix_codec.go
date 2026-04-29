@@ -12,6 +12,7 @@ package codec
 /*
 #include "codec.h"
 #include "fix_codec.h"
+#include "simd_detect.h"
 #include <stdlib.h>
 
 // Forward declarations for fc_init/fc_cleanup (no public header)
@@ -75,6 +76,9 @@ func InitWithConfig(cfg Config) error {
 		return fmt.Errorf("initialization failed with status %d", status)
 	}
 
+	// Initialize codec module
+	C.fc_fix_codec_init()
+
 	state.refCount = 1
 	return nil
 }
@@ -103,7 +107,7 @@ func IsInitialized() bool {
 
 // SIMDLevel returns the current SIMD acceleration level
 func SIMDLevel() string {
-	return C.GoString(C.fc_fix_simd_level())
+	return C.GoString(C.fc_simd_level_string(C.fc_get_simd_level()))
 }
 
 // FIXSection represents field section classification
