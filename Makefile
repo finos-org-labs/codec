@@ -82,8 +82,10 @@ windows:
 	@$(CMAKE) --build $(WINDOWS_BUILD_DIR) --parallel
 
 go:
-	@echo "==> Building Go module (verify compilation)"
+	@echo "==> Building Go module with source (verify compilation)"
 	@CGO_CFLAGS_ALLOW="-m(avx2|avx512f|avx512dq|fma|sse4\.2)" go build ./...
+	@echo "==> Building Go module with lib (verify compilation)"
+	@CGO_CFLAGS_ALLOW="-m(avx2|avx512f|avx512dq|fma|sse4\.2)" go build -tags lib ./...
 
 test: linux
 	@echo "==> Running C tests with coverage"
