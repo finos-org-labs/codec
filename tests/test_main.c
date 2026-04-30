@@ -4,6 +4,8 @@
  */
 
 #include "test_framework.h"
+#include <platform.h>
+#include <simd_detect.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,6 +15,8 @@ extern void register_codec_tests(void);
 int main(int argc, char** argv) {
     /* Initialize test framework with command line arguments */
     fc_test_init_with_args(argc, argv);
+
+    fc_init();
 
     /* Register all test suites */
     register_codec_tests();

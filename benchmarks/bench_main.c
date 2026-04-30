@@ -4,6 +4,7 @@
  */
 
 #include "bench_framework.h"
+#include <platform.h>
 #include <simd_detect.h>
 #include <stdio.h>
 
@@ -14,8 +15,9 @@ int main(int argc, char** argv) {
     (void)argc;
     (void)argv;
 
+    fc_init();
+
     fc_bench_init();
-    fc_detect_simd();
 
     printf("codec performance benchmarks v%s\n", FC_BENCH_VERSION);
 
