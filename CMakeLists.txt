@@ -10,8 +10,8 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompilerFlags.cmake)
 
 # Sanitizer configuration
 if(FC_ENABLE_SANITIZERS)
-    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.github/sanitizers.cmake)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/.github/sanitizers.cmake)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/sanitizers.cmake)
     endif()
 endif()
 

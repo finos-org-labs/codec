@@ -5,7 +5,16 @@
 #
 
 BasedOnStyle: LLVM
-ColumnLimit: 120
+ColumnLimit: 100
+
+BinPackParameters: false
+BinPackArguments: false
+AllowAllParametersOfDeclarationOnNextLine: false
+PenaltyBreakBeforeFirstCallParameter: 0
+AlignAfterOpenBracket: BlockIndent
+ContinuationIndentWidth: 4
+AlwaysBreakAfterReturnType: None
+PenaltyReturnTypeOnItsOwnLine: 1000000
 
 IndentWidth: 4
 UseTab: Never
@@ -31,8 +40,10 @@ SpaceAfterCStyleCast: true
 
 ReflowComments: true
 
-AlignConsecutiveAssignments: None
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveMacros: Consecutive
 AlignConsecutiveDeclarations: None
+AlignArrayOfStructures: Left
 
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
@@ -40,4 +51,3 @@ AllowShortLoopsOnASingleLine: false
 
 KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 1
-

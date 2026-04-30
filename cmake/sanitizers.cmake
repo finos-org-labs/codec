@@ -1,5 +1,5 @@
 #
-# .github/sanitizers.cmake - CMake sanitizer configuration for codec library
+# cmake/sanitizers.cmake - CMake sanitizer configuration for codec library
 #
 #
 # Provides unified sanitizer configuration that works across:
